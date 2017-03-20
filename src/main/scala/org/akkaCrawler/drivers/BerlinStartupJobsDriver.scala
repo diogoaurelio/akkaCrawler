@@ -5,12 +5,12 @@ import java.time.LocalDateTime
 import org.akkaCrawler.spiders.BerlinStartupJobs
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 /**
   * Driver to run crawling of BerlinStartupJobs
   */
-class BerlinStartupJobsDriver extends SpiderDriver[BerlinStartupJobs] {
-
+class BerlinStartupJobsDriver extends SpiderDriverOnBlockingApi[BerlinStartupJobs] {
 
   def spiderName = "BerlinStartupJobsSpider"
 
@@ -25,11 +25,6 @@ class BerlinStartupJobsDriver extends SpiderDriver[BerlinStartupJobs] {
       Future {
         s.run()
       })
-  }
-
-  def getDriverRunState(run: SpiderDriverRunHandle[BerlinStartupJobs]) = {
-    // TODO
-    DriverRunOngoing[BerlinStartupJobs](driver = this, run)
   }
 }
 

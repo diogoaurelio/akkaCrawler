@@ -17,8 +17,9 @@ class SpiderWorker[T <: Spider](val spiderName: String, driverClassName: String)
     try {
       driver = SpiderFactory[T] (spiderName).driverFor(driverClassName)
     } catch {
-      case t: Throwable => throw RetryableDriverException("SpiderWorker Driver actor could not initialize driver " +
-        "because driver constructor throws exception. Restarting spider-worker driver actor...", t)
+      case t: Throwable => throw RetryableDriverException(s"SpiderWorker driver actor could not initialize " +
+        s"driver ${driverClassName} for spider ${spiderName} because driver constructor throws exception. " +
+        s"Restarting spider-worker driver actor...", t)
     }
   }
 

@@ -4,6 +4,11 @@ import java.time.LocalDateTime
 
 import org.akkaCrawler.spiders.Spider
 
+import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
+import scala.util.{Failure, Random, Success}
+
 /**
   * Spider driver
   */
@@ -19,7 +24,21 @@ trait SpiderDriver[T <: Spider] {
     * Get the current driver run state for a given driver run represented by the handle.
     */
   def getDriverRunState(run: SpiderDriverRunHandle[T]): DriverRunState[T]
+}
 
+trait SpiderDriverOnBlockingApi[T <: Spider] extends SpiderDriver[T] {
+
+  override def getDriverRunState(run: SpiderDriverRunHandle[T]): DriverRunState[T] = {
+    val runState = run.stateHandle.asInstanceOf[Future[DriverRunState[T]]]
+
+    if (runState.isCompleted)
+      runState.value.get match {
+        case s: Success[DriverRunState[T]] => s.value
+        case f: Failure[DriverRunState[T]] => throw f.exception
+      }
+    else
+      DriverRunOngoing[T](this, run)
+  }
 }
 
 trait SpiderDriverCompanionObject[T <: Spider] {
