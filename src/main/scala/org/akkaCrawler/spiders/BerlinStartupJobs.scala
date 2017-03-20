@@ -11,28 +11,25 @@ import net.ruippeixotog.scalascraper.model.{Document, Element}
 import net.ruippeixotog.scalascraper.util.ProxyUtils
 import net.ruippeixotog.scalascraper.util.Validated._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import org.slf4j.LoggerFactory
 
 /**
   * Example crawler
   * TODO
   */
-class BerlinStartupJobs extends Spider {
+class BerlinStartupJobs(implicit ec: ExecutionContext) extends Spider {
+  import BerlinStartupJobs._
 
   val log = LoggerFactory.getLogger(classOf[BerlinStartupJobs])
 
-  lazy val browser = jsoupBrowser()
-  lazy val rootUrl = "http://berlinstartupjobs.com"
-  lazy val maxDeepth = 2
+  lazy val browser = JsoupBrowser()
 
-  def jsoupBrowser = () => JsoupBrowser()
-  def htmlBrowser = () => HtmlUnitBrowser()
   def doc: Document = browser.get(rootUrl)
 
-  def run(): Unit = {
+  def run(url: String): Future[CrawlingRun] = Future {
     println("=== Berlin Startup Jobs Header ===")
-    //println(doc.head)
+    println(doc.head)
 
     println("=== Berlin Startup Jobs Body ===")
     doc >> elementList("h2 .product-listing-h2") |> println
@@ -46,5 +43,15 @@ class BerlinStartupJobs extends Spider {
     items.foreach(elem => println(elem >?> element("href")))
 
     println("==================")
+    CrawlingSuccessful()
   }
+}
+
+object BerlinStartupJobs {
+
+  lazy val rootUrl = "http://berlinstartupjobs.com"
+  lazy val maxDeepth = 2
+
+  def mainUrls: Seq[String] = Seq(rootUrl+"/engineering")
+
 }

@@ -1,20 +1,19 @@
 package org.akkaCrawler.spiders
 
-import org.akkaCrawler.drivers.{SpiderDriver, SpiderDriverCompanionObject}
 
 /**
-  * Spider launcher
+  * Get Spider classes from config
   */
-case class SpiderFactory[T <: Spider](spiderName: String) {
+case class SpiderFactory(spiderClassName: String) {
 
-  def driverFor[T <: Spider](driverClassName: String): SpiderDriver[T] = try {
-    val driverCompanionObjectClass = Class.forName(driverClassName + "$")
+  def spiderFor: SpiderCompanionObject[_] = try {
+    val spiderCompanionObjectClass = Class.forName(spiderClassName + "$")
 
-    val driverCompanionObjectConstructor = driverCompanionObjectClass.getDeclaredConstructor()
-    driverCompanionObjectConstructor.setAccessible(true)
-    val driverCompanionObject = driverCompanionObjectConstructor.newInstance().asInstanceOf[SpiderDriverCompanionObject[T]]()
-    driverCompanionObject
+    val spiderCompanionObjectConstructor = spiderCompanionObjectClass.getDeclaredConstructor()
+    spiderCompanionObjectConstructor.setAccessible(true)
+    spiderCompanionObjectConstructor.newInstance().asInstanceOf[SpiderCompanionObject[_]]
+
   } catch {
-    case t: Throwable => throw new IllegalArgumentException(s"Could not instantiate driver class ${driverClassName}", t)
+    case t: Throwable => throw new IllegalArgumentException(s"Could not instantiate driver class ${spiderClassName}", t)
   }
 }

@@ -1,6 +1,6 @@
 package org.akkaCrawler.drivers
 
-import java.time.LocalDateTime
+import org.joda.time.LocalDateTime
 
 import org.akkaCrawler.spiders.Spider
 
@@ -14,8 +14,6 @@ import scala.util.{Failure, Random, Success}
   */
 trait SpiderDriver[T <: Spider] {
 
-  def spiderName: String
-
   def killRun(run: SpiderDriverRunHandle[T]): Unit = {}
 
   def run(s: T): SpiderDriverRunHandle[T]
@@ -23,12 +21,7 @@ trait SpiderDriver[T <: Spider] {
   /**
     * Get the current driver run state for a given driver run represented by the handle.
     */
-  def getDriverRunState(run: SpiderDriverRunHandle[T]): DriverRunState[T]
-}
-
-trait SpiderDriverOnBlockingApi[T <: Spider] extends SpiderDriver[T] {
-
-  override def getDriverRunState(run: SpiderDriverRunHandle[T]): DriverRunState[T] = {
+  def getDriverRunState(run: SpiderDriverRunHandle[T]): DriverRunState[T] = {
     val runState = run.stateHandle.asInstanceOf[Future[DriverRunState[T]]]
 
     if (runState.isCompleted)
@@ -39,10 +32,6 @@ trait SpiderDriverOnBlockingApi[T <: Spider] extends SpiderDriver[T] {
     else
       DriverRunOngoing[T](this, run)
   }
-}
-
-trait SpiderDriverCompanionObject[T <: Spider] {
-  def apply(): SpiderDriver[T]
 }
 
 class SpiderDriverRunHandle[T <: Spider](val driver: SpiderDriver[T], val started: LocalDateTime, val spider: T, var stateHandle: Any)
