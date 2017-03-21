@@ -34,6 +34,11 @@ trait SpiderDriver[T <: Spider] {
   }
 }
 
+trait SpiderDriverCompanionObject[T <: Spider] {
+  def apply(url: String, spiderName: String): SpiderDriver[T]
+}
+
+
 class SpiderDriverRunHandle[T <: Spider](val driver: SpiderDriver[T], val started: LocalDateTime, val spider: T, var stateHandle: Any)
 
 

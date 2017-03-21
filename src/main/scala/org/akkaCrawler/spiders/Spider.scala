@@ -6,7 +6,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model.{Document, Element}
 import org.akkaCrawler.drivers.SpiderDriver
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 /**
@@ -23,7 +23,7 @@ trait SpiderCompanionObject[T <: Spider] {
   def _mainUrls: List[String]
   def mainUrls: List[String] = _mainUrls.map(s => rootUrl + "/" + s)
   def maxDeepth: Int
-  def getDriver(url: String, spiderName: String): SpiderDriver[T]
+  def apply()(implicit ec: ExecutionContext): T
 }
 
 

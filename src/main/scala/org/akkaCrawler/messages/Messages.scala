@@ -21,6 +21,6 @@ object Messages {
     */
   sealed class Success
 
-  case class Run(url: String, spiderName: String)
+  case class StartCrawl(url: String, spiderName: String) extends CommandRequest
 
 }
