@@ -19,9 +19,11 @@ trait Spider {
 }
 
 trait SpiderCompanionObject[T <: Spider] {
-  def apply(): T
-
-  def getDriver():SpiderDriver[T]
+  def rootUrl: String
+  def _mainUrls: List[String]
+  def mainUrls: List[String] = _mainUrls.map(s => rootUrl + "/" + s)
+  def maxDeepth: Int
+  def getDriver(url: String, spiderName: String): SpiderDriver[T]
 }
 
 

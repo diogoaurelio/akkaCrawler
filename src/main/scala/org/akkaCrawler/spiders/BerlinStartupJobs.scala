@@ -10,6 +10,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model.{Document, Element}
 import net.ruippeixotog.scalascraper.util.ProxyUtils
 import net.ruippeixotog.scalascraper.util.Validated._
+import org.akkaCrawler.drivers.{SpiderDriver, SpiderJobsDriver}
 
 import scala.concurrent.{ExecutionContext, Future}
 import org.slf4j.LoggerFactory
@@ -47,11 +48,11 @@ class BerlinStartupJobs(implicit ec: ExecutionContext) extends Spider {
   }
 }
 
-object BerlinStartupJobs {
+object BerlinStartupJobs extends SpiderCompanionObject[BerlinStartupJobs] {
 
-  lazy val rootUrl = "http://berlinstartupjobs.com"
-  lazy val maxDeepth = 2
-
-  def mainUrls: Seq[String] = Seq(rootUrl+"/engineering")
+  def rootUrl = "http://berlinstartupjobs.com"
+  def _mainUrls: List[String] = List("engineering")
+  def maxDeepth = 2
+  def getDriver(url: String, spiderName: String) = new SpiderJobsDriver[BerlinStartupJobs](url, spiderName)
 
 }

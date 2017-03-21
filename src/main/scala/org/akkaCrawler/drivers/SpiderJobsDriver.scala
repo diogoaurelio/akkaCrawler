@@ -19,5 +19,4 @@ class SpiderJobsDriver[T <: Spider](val url: String = null, val spiderName: Stri
       stateHandle = s.run(url)
     )
   }
-
 }

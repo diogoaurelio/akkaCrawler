@@ -6,12 +6,12 @@ package org.akkaCrawler.spiders
   */
 case class SpiderFactory(spiderClassName: String) {
 
-  def spiderFor: SpiderCompanionObject[_] = try {
+  def spiderFor[T <: Spider]: SpiderCompanionObject[T] = try {
     val spiderCompanionObjectClass = Class.forName(spiderClassName + "$")
 
     val spiderCompanionObjectConstructor = spiderCompanionObjectClass.getDeclaredConstructor()
     spiderCompanionObjectConstructor.setAccessible(true)
-    spiderCompanionObjectConstructor.newInstance().asInstanceOf[SpiderCompanionObject[_]]
+    spiderCompanionObjectConstructor.newInstance().asInstanceOf[SpiderCompanionObject[T]]
 
   } catch {
     case t: Throwable => throw new IllegalArgumentException(s"Could not instantiate driver class ${spiderClassName}", t)
