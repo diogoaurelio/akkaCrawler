@@ -11,11 +11,15 @@ libraryDependencies ++= Seq(
   ,"com.typesafe.akka" %% "akka-cluster" % akkaVersion
   ,"com.typesafe.akka" %% "akka-cluster-tools" % akkaVersion
 
-
+  // crawling lib
   ,"net.ruippeixotog" %% "scala-scraper" % "1.2.0"
 
   ,"org.slf4j" % "slf4j-simple" % "1.6.4"
 
+  // deployment on AWS
+  ,"com.amazonaws" % "aws-java-sdk" % "1.11.8"
+
+  // testing
   ,"com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
   ,"com.typesafe.akka" %% "akka-multi-node-testkit" % akkaVersion
   ,"org.scalatest" %% "scalatest" % "2.2.4" % "test"
